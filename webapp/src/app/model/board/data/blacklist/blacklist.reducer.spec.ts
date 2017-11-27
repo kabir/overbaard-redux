@@ -1,3 +1,5 @@
+/// <reference path="../../../../common/immutable-matcher.spec.d.ts"/>
+import {immutableMatcher} from '../../../../common/immutable-matcher.spec';
 import {cloneObject} from '../../../../common/object-util';
 import {BlacklistState, initialBlacklistState} from './blacklist.model';
 import {BlacklistActions, blacklistMetaReducer} from './blacklist.reducer';
@@ -20,6 +22,9 @@ export function getTestBlacklistInput() {
   });
 }
 describe('Blacklist reducer tests', () => {
+  beforeEach(() => {
+    jasmine.addMatchers(immutableMatcher);
+  });
   describe('Deserialize', () => {
     it('Deserialize initial state', () => {
       const state: BlacklistState =
@@ -28,6 +33,7 @@ describe('Blacklist reducer tests', () => {
       expect(state.priorities.toArray()).toEqual(['Priority1', 'Priority2']);
       expect(state.issueTypes.toArray()).toEqual(['Type1', 'Type2']);
       expect(state.issues.toArray()).toEqual(['BAD-1', 'BAD-2']);
+      expect(state).toBeImmutable();
     });
 
     it('Deserialize empty blacklist', () => {
@@ -37,6 +43,7 @@ describe('Blacklist reducer tests', () => {
       expect(state.priorities.toArray()).toEqual([]);
       expect(state.issueTypes.toArray()).toEqual([]);
       expect(state.issues.toArray()).toEqual([]);
+      expect(state).toBeImmutable();
     });
 
     it ('Deserialize same state', () => {
@@ -60,6 +67,7 @@ describe('Blacklist reducer tests', () => {
       expect(newState.priorities.toArray()).toEqual(['Priority1', 'Priority2']);
       expect(newState.issueTypes.toArray()).toEqual(['Type1', 'Type2']);
       expect(newState.issues.toArray()).toEqual(['BAD-1', 'BAD-2']);
+      expect(newState).toBeImmutable();
     });
 
     it ('Add priorities', () => {
@@ -72,6 +80,7 @@ describe('Blacklist reducer tests', () => {
       expect(newState.priorities.toArray()).toEqual(['aPriority', 'Priority1', 'Priority2', 'zPriority']);
       expect(newState.issueTypes.toArray()).toEqual(['Type1', 'Type2']);
       expect(newState.issues.toArray()).toEqual(['BAD-1', 'BAD-2']);
+      expect(newState).toBeImmutable();
     });
 
     it ('Add issueTypes', () => {
@@ -84,6 +93,7 @@ describe('Blacklist reducer tests', () => {
       expect(newState.priorities.toArray()).toEqual(['Priority1', 'Priority2']);
       expect(newState.issueTypes.toArray()).toEqual(['aType', 'Type1', 'Type2', 'zType']);
       expect(newState.issues.toArray()).toEqual(['BAD-1', 'BAD-2']);
+      expect(newState).toBeImmutable();
     });
 
     it ('Add issues', () => {
@@ -96,6 +106,7 @@ describe('Blacklist reducer tests', () => {
       expect(newState.priorities.toArray()).toEqual(['Priority1', 'Priority2']);
       expect(newState.issueTypes.toArray()).toEqual(['Type1', 'Type2']);
       expect(newState.issues.toArray()).toEqual(['aIssue', 'BAD-1', 'BAD-2', 'zIssue']);
+      expect(newState).toBeImmutable();
     });
 
 
@@ -112,6 +123,7 @@ describe('Blacklist reducer tests', () => {
       expect(newState.priorities.toArray()).toEqual(['Priority1', 'Priority2']);
       expect(newState.issueTypes.toArray()).toEqual(['Type1', 'Type2']);
       expect(newState.issues.toArray()).toEqual(['BAD-2']);
+      expect(newState).toBeImmutable();
     });
 
     it ('Combine changes', () => {
@@ -129,6 +141,7 @@ describe('Blacklist reducer tests', () => {
       expect(newState.priorities.toArray()).toEqual(['aPriority', 'Priority1', 'Priority2', 'zPriority']);
       expect(newState.issueTypes.toArray()).toEqual(['aType', 'Type1', 'Type2', 'zType']);
       expect(newState.issues.toArray()).toEqual(['aIssue', 'zIssue']);
+      expect(newState).toBeImmutable();
     });
 
     it ('No change', () => {

@@ -1,8 +1,12 @@
+/// <reference path="../../../../common/immutable-matcher.spec.d.ts"/>
+import {immutableMatcher} from '../../../../common/immutable-matcher.spec';
 import {Assignee, AssigneeUtil} from './assignee.model';
 import {cloneObject} from '../../../../common/object-util';
 
 describe('Assignee unit tests', () => {
-
+  beforeEach(function () {
+    jasmine.addMatchers(immutableMatcher);
+  });
   describe('Deserialize', () => {
     const input: any = cloneObject({
       key : 'userA',
@@ -20,6 +24,7 @@ describe('Assignee unit tests', () => {
       expect(assignee.avatar).toEqual('https://example.com/user-A.png');
       expect(assignee.name).toEqual('User A');
       expect(assignee.initials).toEqual('UA');
+      expect(assignee).toBeImmutable();
     });
 
     describe('initials', () => {

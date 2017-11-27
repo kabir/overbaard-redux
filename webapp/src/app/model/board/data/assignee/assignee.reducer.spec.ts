@@ -1,3 +1,5 @@
+/// <reference path="../../../../common/immutable-matcher.spec.d.ts"/>
+import {immutableMatcher} from '../../../../common/immutable-matcher.spec';
 import {async} from '@angular/core/testing';
 import {Assignee, AssigneeState, initialAssigneeState} from './assignee.model';
 import {AssigneeActions, assigneeMetaReducer} from './assignee.reducer';
@@ -29,7 +31,9 @@ describe('Assignee reducer tests', () => {
   let assigneeState: AssigneeState;
   beforeEach(async(() => {
     assigneeState = getTestAssigneeState();
+    jasmine.addMatchers(immutableMatcher);
   }));
+
 
   it('Deserialize', () => {
     it('Initial state', () => {
@@ -80,6 +84,7 @@ describe('Assignee reducer tests', () => {
         'kabir', 'Kabir Khan', 'KK', 'kabir@example.com', 'https://example.com/kabir.png');
       checkAssignee(assigneeState.assignees.get('a-list'),
         'a-list', 'Sylvester Superstar', 'SS', 'sly@example.com', 'https://example.com/a-list.png');
+      expect(assigneeState).toBeImmutable();
     });
 
     it ('No change', () => {
@@ -95,6 +100,7 @@ describe('Assignee reducer tests', () => {
     expect(assignee.initials).toEqual(initials);
     expect(assignee.email).toEqual(email);
     expect(assignee.avatar).toEqual(avatar);
+    expect(assignee).toBeImmutable();
   }
 });
 
