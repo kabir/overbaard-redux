@@ -46,6 +46,7 @@ import {DbExplorerComponent} from './components/db-explorer/db-explorer.componen
 import {AccessLogViewComponent} from './components/access-log/access-log.component';
 import {ScrollListenerDirective} from './directives/scroll-listener.directive';
 import {FilterFormEntryPipe} from './pipes/filter-entry.pipe';
+import {DndModule} from 'ng2-dnd';
 
 const appState: AppState = initialAppState;
 export function getInitialAppState(): AppState {
@@ -95,6 +96,7 @@ export function getInitialAppState(): AppState {
   imports: [
     BrowserAnimationsModule,
     BrowserModule,
+    DndModule.forRoot(),
     FormsModule,
     HttpClientModule,
     MaterialModule,
