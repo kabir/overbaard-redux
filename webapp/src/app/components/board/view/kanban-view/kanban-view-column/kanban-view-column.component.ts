@@ -4,11 +4,10 @@ import {
 } from '@angular/core';
 import {List, Map} from 'immutable';
 import {BoardIssueView} from '../../../../../view-model/board/board-issue-view';
-import {IssueTable} from '../../../../../view-model/board/issue-table';
 import {BoardHeader} from '../../../../../view-model/board/board-header';
 import {UpdateParallelTaskEvent} from '../../../../../events/update-parallel-task.event';
-import {IssueSummaryLevel} from '../../../../../model/board/user/issue-summary-level';
 import {IssueDetailState} from '../../../../../model/board/user/issue-detail/issue-detail.model';
+import {DragDropData} from 'ng2-dnd';
 
 @Component({
   selector: 'app-kanban-view-column',
@@ -66,4 +65,7 @@ export class KanbanViewColumnComponent implements OnInit, OnChanges {
     this.updateParallelTask.emit(event);
   }
 
+  dragAndDropped(event: DragDropData) {
+    console.log(event);
+  }
 }

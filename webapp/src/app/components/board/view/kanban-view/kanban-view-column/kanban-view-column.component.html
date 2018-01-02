@@ -1,4 +1,9 @@
-<div *ngIf="header.visible" class="column visible">
+<div
+  *ngIf="header.visible"
+  class="column visible"
+  dnd-droppable
+  (onDropSuccess)="dragAndDropped($event)"
+>
   <!-- trackBy is a hint to angular to be able to keep (i.e. don't destroy and recreate) as many components as possible -->
   <div *ngIf="displayIssues">
     <app-board-issue
@@ -9,5 +14,9 @@
     ></app-board-issue>
   </div>
 </div>
-<div *ngIf="!header.visible" class="column invisible">
+<div
+  *ngIf="!header.visible"
+  class="column invisible"
+  dnd-droppable
+  (onDropSuccess)="dragAndDropped($event)">
 </div>
