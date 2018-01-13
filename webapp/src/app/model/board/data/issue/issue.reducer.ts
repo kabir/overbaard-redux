@@ -3,6 +3,7 @@ import {Action} from '@ngrx/store';
 import {DeserializeIssueLookupParams, initialIssueState, IssueChangeInfo, IssueState, IssueUtil} from './issue.model';
 import {List, Map} from 'immutable';
 import {BoardIssue} from './board-issue';
+import {equalObjects} from '../../../../common/object-util';
 
 
 const DESERIALIZE_INITIAL_ISSUES = 'DESERIALIZE_INITIAL_ISSUES';
@@ -67,7 +68,7 @@ export function issueMetaReducer(state: IssueState = initialIssueState, action: 
       newMap = Map<string, BoardIssue>().withMutations(mutable => {
         payload.forEach((issue, key) => {
           const existing: BoardIssue = state.issues.get(key);
-          if (existing == null || !IssueUtil.issuesEqual(existing, issue)) {
+          if (existing == null || !equalObjects(existing, issue)) {
             // It is a new issue, or an existing one with a change
             mutable.set(key, issue);
             changed.set(issue.key, IssueUtil.createChangeInfo(existing, issue));

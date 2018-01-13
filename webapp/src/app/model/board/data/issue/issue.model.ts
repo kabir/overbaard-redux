@@ -4,11 +4,9 @@ import {Priority} from '../priority/priority.model';
 import {IssueType} from '../issue-type/issue-type.model';
 import {fromJS, List, Map, OrderedMap, OrderedSet} from 'immutable';
 import {CustomField} from '../custom-field/custom-field.model';
-import {BoardProject, LinkedProject, ParallelTask, ParallelTaskOption} from '../project/project.model';
-import {cloneObject} from '../../../../common/object-util';
+import {BoardProject, LinkedProject, ParallelTask} from '../project/project.model';
+import {cloneObject, freezeObject} from '../../../../common/object-util';
 import {BoardIssue} from './board-issue';
-import {Issue} from './issue';
-import {BlacklistState, BlacklistStateRecord} from '../blacklist/blacklist.model';
 import {LinkedIssue} from './linked-issue';
 import {ColourTable} from '../../../../common/colour-table';
 
@@ -49,25 +47,11 @@ const DEFAULT_ISSUE: BoardIssue = {
   ownState: -1
 };
 
-const DEFAULT_LINKED_ISSUE: LinkedIssue = {
-  key: null,
-  summary: null,
-  state: null,
-  stateName: null,
-  colour: null
-};
-
 const DEFAULT_ISSUE_CHANGE_INFO: IssueChangeInfo = {
   key: null,
   change: null
 }
 
-
-interface BoardIssueRecord extends TypedRecord<BoardIssueRecord>, BoardIssue {
-}
-
-interface LinkedIssueRecord extends TypedRecord<LinkedIssueRecord>, LinkedIssue {
-}
 
 interface IssueStateRecord extends TypedRecord<IssueStateRecord>, IssueState {
 }
@@ -75,8 +59,6 @@ interface IssueStateRecord extends TypedRecord<IssueStateRecord>, IssueState {
 interface IssueChangeInfoRecord extends TypedRecord<IssueChangeInfoRecord>, IssueChangeInfo {
 }
 
-const ISSUE_FACTORY = makeTypedFactory<BoardIssue, BoardIssueRecord>(DEFAULT_ISSUE);
-const LINKED_ISSUE_FACTORY = makeTypedFactory<LinkedIssue, LinkedIssueRecord>(DEFAULT_LINKED_ISSUE);
 const STATE_FACTORY = makeTypedFactory<IssueState, IssueStateRecord>(DEFAULT_STATE);
 const ISSUE_CHANGE_INFO_FACTORY = makeTypedFactory<IssueChangeInfo, IssueChangeInfoRecord>(DEFAULT_ISSUE_CHANGE_INFO);
 export const initialIssueState: IssueState = STATE_FACTORY(DEFAULT_STATE);
@@ -258,12 +240,24 @@ export class IssueUtil {
     const projectCode: string = IssueUtil.productCodeFromKey(input['key']);
 
     // Clone this since we will be modifying it, and the data received from the server has been frozen
-    input = cloneObject(input);
+    input = {...input};
     input['projectCode'] = projectCode;
 
     // Rework the data as needed before deserializing
     if (input['linked-issues']) {
-      input['linkedIssues'] = input['linked-issues'];
+      const liInput: any[] = <any[]>input['linked-issues'];
+      const linkedIssues: LinkedIssue[] = new Array<LinkedIssue>();
+      for (let i = 0 ; i < liInput.length ; i++) {
+        const data: LinkedIssue = {...liInput[i]};
+        const projCode: string = IssueUtil.productCodeFromKey(data['key']);
+        const project: LinkedProject = params.linkedProjects.get(projCode);
+        const stateIndex: number = data['state'];
+        data.colour = ColourTable.INSTANCE.getColourTable(project.states.size)[stateIndex];
+        data.stateName = project.states.get(stateIndex);
+
+        linkedIssues[i] = freezeObject(data);
+      }
+      input['linkedIssues'] = List<LinkedIssue>(linkedIssues);
     }
     delete input['linked-issues'];
 
@@ -323,13 +317,15 @@ export class IssueUtil {
             const stateIndex: number = data['state'];
             data.colour = ColourTable.INSTANCE.getColourTable(project.states.size)[stateIndex];
             data.stateName = project.states.get(stateIndex);
-            mutable.set(i, LINKED_ISSUE_FACTORY(<any>data));
+            mutable.set(i, freezeObject(data));
           });
         });
       }
       return value;
     });
-    return ISSUE_FACTORY(temp);
+    // return freezeObject(temp);
+    const issue: BoardIssue = Object.assign({}, DEFAULT_ISSUE, input);
+    return freezeObject(issue);
   }
 
   static issueChangeFromJs(input: any, params: DeserializeIssueLookupParams): BoardIssue {
@@ -379,36 +375,32 @@ export class IssueUtil {
   }
 
   static updateIssue(issue: BoardIssue, change: BoardIssue): BoardIssue {
-    if (issue == null) {
-      issue = ISSUE_FACTORY(DEFAULT_ISSUE);
-    }
-    issue = (<BoardIssueRecord>issue).withMutations(mutable => {
-      for (const key of Object.keys(change)) {
-        const value = change[key];
-        if (value != null) {
-          if (value === CLEAR_STRING_LIST && (key === 'components' || key === 'labels' || key === 'fixVersions')) {
-            mutable.set(key, null);
-          } else if (key === 'customFields') {
-            change.customFields.forEach((cf, cfKey) => {
-              if (cf) {
-                mutable.customFields = mutable.customFields.set(cfKey, cf);
-              } else {
-                mutable.customFields = mutable.customFields.delete(cfKey);
+    issue = {...(issue ? issue : DEFAULT_ISSUE)};
+    for (const key of Object.keys(change)) {
+      const value = change[key];
+      if (value != null) {
+        if (value === CLEAR_STRING_LIST && (key === 'components' || key === 'labels' || key === 'fixVersions')) {
+          issue[key] =  null;
+        } else if (key === 'customFields') {
+          change.customFields.forEach((cf, cfKey) => {
+            if (cf) {
+              issue.customFields = issue.customFields.set(cfKey, cf);
+            } else {
+              issue.customFields = issue.customFields.delete(cfKey);
+            }
+          });
+        } else if (key === 'selectedParallelTasks') {
+            issue.selectedParallelTasks = issue.selectedParallelTasks ? issue.selectedParallelTasks : List<number>();
+            change.selectedParallelTasks.forEach((v, i) => {
+              if (!isNaN(v)) {
+                issue.selectedParallelTasks = issue.selectedParallelTasks.set(i, v);
               }
             });
-          } else if (key === 'selectedParallelTasks') {
-              mutable.selectedParallelTasks = mutable.selectedParallelTasks ? mutable.selectedParallelTasks : List<number>();
-              change.selectedParallelTasks.forEach((v, i) => {
-                if (!isNaN(v)) {
-                  mutable.selectedParallelTasks = mutable.selectedParallelTasks.set(i, v);
-                }
-              });
-          } else {
-            mutable.set(key, value);
-          }
+        } else {
+          issue[key] = value;
         }
       }
-    });
+    }
     return issue;
   }
 
@@ -445,17 +437,10 @@ export class IssueUtil {
     });
   }
 
-  static issuesEqual(i1: BoardIssue, i2: BoardIssue): boolean {
-    if (!i1 && i2) {
-      return false;
-    }
-    return (<BoardIssueRecord>i1).equals(<BoardIssueRecord>i2);
-  }
-
-  private static lookupStringsFromIndexArray(input: number[], lookup: List<string>): string[] {
+  private static lookupStringsFromIndexArray(input: number[], lookup: List<string>): List<string> {
     const strings: string[] = new Array<string>(input.length);
     input.forEach((c, i) => strings[i] = lookup.get(c));
-    return strings;
+    return List<string>(strings);
   }
 
   static productCodeFromKey(key: string): string {
