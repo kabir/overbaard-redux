@@ -19,7 +19,7 @@ import {getTestAssigneesInput} from './assignee/assignee.reducer.spec';
 import {getTestFixVersionsInput} from './fix-version/fix-version.reducer.spec';
 import {IssueChecker} from './issue/issue.model.spec';
 import {BoardState} from './board';
-import {BoardUtil, initialBoardState} from './board.model';
+import {initialBoardState} from './board.model';
 import {HeaderState} from './header/header.state';
 import {TypedRecord} from 'typed-immutable-record';
 
