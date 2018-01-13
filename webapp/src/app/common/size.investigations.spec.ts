@@ -57,6 +57,11 @@ describe('Size Investigations', () => {
         interests: <string[]>Object.freeze([...o.interests, 'Dancing'])
       };
       // Any changes here will not work either
+
+      const anotherNewObj: Person = {
+        ...newObj
+      }
+      console.log(newObj === anotherNewObj);
     });
   });
 
