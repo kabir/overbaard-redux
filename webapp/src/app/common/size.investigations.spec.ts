@@ -1,7 +1,7 @@
 import {SizeUtil} from './sizeof';
 import {List, Map, OrderedMap, OrderedSet, Set} from 'immutable';
 
-describe('Size Investigations', () => {
+xdescribe('Size Investigations', () => {
   it ('Some sizes', () => {
     checkSize('a', `'a'`);
     checkSize('abcd', `'abcd'`);

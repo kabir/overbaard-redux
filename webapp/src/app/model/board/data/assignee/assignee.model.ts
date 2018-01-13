@@ -1,6 +1,6 @@
 import {makeTypedFactory, TypedRecord} from 'typed-immutable-record';
 import {OrderedMap} from 'immutable';
-import {BoardState} from '../board';
+import {freezeObject} from '../../../../common/object-util';
 
 export interface AssigneeState {
   assignees: OrderedMap<string, Assignee>;
@@ -18,26 +18,14 @@ const DEFAULT_STATE: AssigneeState = {
   assignees: OrderedMap<string, Assignee>()
 };
 
-const DEFAULT_ASSIGNEE: Assignee = {
-  key: null,
-  email: null,
-  avatar: null,
-  name: null,
-  initials: null
-};
-
 export interface AssigneeStateRecord extends TypedRecord<AssigneeStateRecord>, AssigneeState {
 }
 
-export interface AssigneeRecord extends TypedRecord<AssigneeRecord>, Assignee {
-}
-
 const STATE_FACTORY = makeTypedFactory<AssigneeState, AssigneeStateRecord>(DEFAULT_STATE);
-const ASSIGNEE_FACTORY = makeTypedFactory<Assignee, AssigneeRecord>(DEFAULT_ASSIGNEE);
 const assigneeStateCaster: AssigneeStateRecord = STATE_FACTORY(DEFAULT_STATE);
 export const initialAssigneeState: AssigneeState = assigneeStateCaster;
 
-export const NO_ASSIGNEE: Assignee = ASSIGNEE_FACTORY({
+export const NO_ASSIGNEE: Assignee = freezeObject({
   key: '_____N$O$N$E____',
   email: '-',
   avatar: null,
@@ -47,14 +35,9 @@ export const NO_ASSIGNEE: Assignee = ASSIGNEE_FACTORY({
 
 export class AssigneeUtil {
 
-  static fromJS(input: any): AssigneeRecord {
-    // Clone the object here since in 'strict' mode it does not like us adding the initials attribute
-    const clone: Object = {};
-    for (const key of Object.keys(input)) {
-      clone[key] = input[key];
-    }
-    clone['initials'] = AssigneeUtil.calculateInitials(input['name']);
-    return ASSIGNEE_FACTORY(<Assignee>clone);
+  static fromJS(input: any): Assignee {
+    const assignee: Assignee = {...<Assignee>input, initials: AssigneeUtil.calculateInitials(input['name'])};
+    return freezeObject(assignee);
   }
 
   static withMutations(s: AssigneeState, mutate: (mutable: AssigneeState) => any): AssigneeState {

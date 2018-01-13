@@ -1,6 +1,7 @@
 import {AppState} from '../../../../app-store';
 import {Action, createSelector} from '@ngrx/store';
 import {initialPriorityState, Priority, PriorityState, PriorityUtil} from './priority.model';
+import {equalObjects} from '../../../../common/object-util';
 
 
 const DESERIALIZE_ALL_PRIORITIES = 'DESERIALIZE_ALL_PRIORITIES';
@@ -32,8 +33,11 @@ export function priorityMetaReducer(state: PriorityState = initialPriorityState,
       const payload: Priority[] = (<DeserializePrioritiesAction>action).payload;
       let priorities = state.priorities;
       priorities = priorities.withMutations(mutable => {
-        for (const type of payload) {
-          mutable.set(type.name, type);
+        for (const priority of payload) {
+          if (!equalObjects(mutable.get(priority.name), priority)) {
+            mutable.set(priority.name, priority);
+          }
+
         }
       });
       return PriorityUtil.withMutations(state, mutable => {

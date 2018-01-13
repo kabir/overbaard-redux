@@ -3,8 +3,7 @@ import {initialPriorityState, Priority, PriorityState} from './priority.model';
 import {PriorityActions, priorityMetaReducer} from './priority.reducer';
 import {cloneObject} from '../../../../common/object-util';
 import {initialLabelState, LabelState} from '../label/label.model';
-import {LabelActions, labelMetaReducer} from '../label/label.reducer';
-import {getTestLabelsInput} from '../label/label.reducer.spec';
+import {labelMetaReducer} from '../label/label.reducer';
 
 export function getTestPrioritiesInput(): any {
   return cloneObject([{
@@ -41,10 +40,10 @@ describe('Priority reducer tests', () => {
   });
 
   it ('Deserialize same state', () => {
-    const stateA: LabelState =
-      labelMetaReducer(initialLabelState, LabelActions.createDeserializeLabels(getTestLabelsInput()));
-    const stateB: LabelState =
-      labelMetaReducer(stateA, LabelActions.createDeserializeLabels(getTestLabelsInput()));
+    const stateA: PriorityState =
+      priorityMetaReducer(initialPriorityState, PriorityActions.createDeserializePriorities(getTestPrioritiesInput()));
+    const stateB: PriorityState =
+      priorityMetaReducer(stateA, PriorityActions.createDeserializePriorities(getTestPrioritiesInput()));
     expect(stateA).toBe(stateB);
   });
 

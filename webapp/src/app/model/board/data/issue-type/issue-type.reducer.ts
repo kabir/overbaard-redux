@@ -1,6 +1,7 @@
 import {AppState} from '../../../../app-store';
 import {Action, createSelector} from '@ngrx/store';
 import {initialIssueTypeState, IssueType, IssueTypeState, IssueTypeUtil} from './issue-type.model';
+import {equalObjects} from '../../../../common/object-util';
 
 
 const DESERIALIZE_ALL_ISSUE_TYPES = 'DESERIALIZE_ALL_ISSUE_TYPES';
@@ -34,6 +35,7 @@ export function issueTypeMetaReducer(state: IssueTypeState = initialIssueTypeSta
       let types = state.types;
       types = types.withMutations(mutable => {
         for (const type of payload) {
+          if (!equalObjects(mutable.get(type.name), type))
           mutable.set(type.name, type);
         }
       });
