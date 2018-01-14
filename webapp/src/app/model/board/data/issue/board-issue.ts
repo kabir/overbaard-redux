@@ -6,15 +6,16 @@ import {CustomField} from '../custom-field/custom-field.model';
 import {Issue} from './issue';
 import {ParallelTask, ParallelTaskOption} from '../project/project.model';
 import {LinkedIssue} from './linked-issue';
+import {Indexed} from '../../../../common/indexed';
 
 export interface BoardIssue extends Issue {
   projectCode: string;
   assignee: Assignee;
   priority: Priority;
   type: IssueType;
-  components: OrderedSet<string>;
-  labels: OrderedSet<string>;
-  fixVersions: OrderedSet<string>;
+  components: Indexed<string>;
+  labels: Indexed<string>;
+  fixVersions: Indexed<string>;
   customFields: Map<string, CustomField>;
   parallelTasks: List<ParallelTask>;
   selectedParallelTasks: List<number>;

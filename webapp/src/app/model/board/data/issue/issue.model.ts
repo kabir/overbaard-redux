@@ -2,13 +2,14 @@ import {makeTypedFactory, TypedRecord} from 'typed-immutable-record';
 import {Assignee, NO_ASSIGNEE} from '../assignee/assignee.model';
 import {Priority} from '../priority/priority.model';
 import {IssueType} from '../issue-type/issue-type.model';
-import {fromJS, List, Map, OrderedMap, OrderedSet} from 'immutable';
+import {fromJS, List, Map, OrderedMap, OrderedSet, Seq} from 'immutable';
 import {CustomField} from '../custom-field/custom-field.model';
 import {BoardProject, LinkedProject, ParallelTask} from '../project/project.model';
 import {cloneObject, freezeObject} from '../../../../common/object-util';
 import {BoardIssue} from './board-issue';
 import {LinkedIssue} from './linked-issue';
 import {ColourTable} from '../../../../common/colour-table';
+import {Indexed} from '../../../../common/indexed';
 
 export interface IssueState {
   issues: Map<string, BoardIssue>;
@@ -63,7 +64,7 @@ const STATE_FACTORY = makeTypedFactory<IssueState, IssueStateRecord>(DEFAULT_STA
 const ISSUE_CHANGE_INFO_FACTORY = makeTypedFactory<IssueChangeInfo, IssueChangeInfoRecord>(DEFAULT_ISSUE_CHANGE_INFO);
 export const initialIssueState: IssueState = STATE_FACTORY(DEFAULT_STATE);
 
-const CLEAR_STRING_LIST = OrderedSet<string>('Clear this!');
+const CLEAR_STRING_LIST = Indexed.indexArray([], () =>  '', () => '');
 /**
  * Convenience class to make it easier to pass in other data needed to deserialize an issue. Especially from unit tests,
  * where we do this repeatedly and not all data is always needed.
@@ -421,12 +422,12 @@ export class IssueUtil {
     return ISSUE_CHANGE_INFO_FACTORY(changeInfo);
   }
 
-  private static getClearableStringSet(input: any, clearKey: string, key: string): OrderedSet<string> {
+  private static getClearableStringSet(input: any, clearKey: string, key: string): Indexed<string> {
     if (input[clearKey]) {
       return CLEAR_STRING_LIST;
     }
     if (input[key]) {
-      return List<string>(input[key]).sort((a, b) => a.localeCompare(b)).toOrderedSet();
+      return Indexed.indexArray(<string[]>input[key], s => s, s => s);
     }
     return null;
   }
