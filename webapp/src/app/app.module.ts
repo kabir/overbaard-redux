@@ -1,5 +1,5 @@
 import {BrowserModule} from '@angular/platform-browser';
-import {NgModule, ViewChild} from '@angular/core';
+import {NgModule} from '@angular/core';
 import {FormsModule, ReactiveFormsModule} from '@angular/forms';
 import {AppRoutingModule} from './app-routing.module';
 import {AppComponent} from './app.component';
@@ -37,7 +37,6 @@ import {ParallelTaskSelectorComponent} from './components/board/issue/parallel-t
 import {ParallelTaskComponent} from './components/board/issue/parallel-task.component';
 import {MoveIssueDialogComponent} from './components/board/issue/move-issue-dialog.component';
 import {CommentIssueDialogComponent} from './components/board/issue/comment-issue-dialog.component';
-import {MatSnackBar} from '@angular/material';
 import {RankIssueDialogComponent} from './components/board/issue/rank-issue-dialog.component';
 import {LoginComponent} from './components/login/login.component';
 import {BlacklistDialogComponent} from './components/board/blacklist/blacklist-dialog.component';
@@ -45,6 +44,7 @@ import {LinkedIssueComponent} from './components/board/issue/linked-issue.compon
 import {DbExplorerComponent} from './components/db-explorer/db-explorer.component';
 import {AccessLogViewComponent} from './components/access-log/access-log.component';
 import {ScrollListenerDirective} from './directives/scroll-listener.directive';
+import {FontMeasureComponent} from './components/font-measure/font-measure.component';
 
 const appState: AppState = initialAppState;
 export function getInitialAppState(): AppState {
@@ -82,7 +82,8 @@ export function getInitialAppState(): AppState {
     BlacklistDialogComponent,
     DbExplorerComponent,
     AccessLogViewComponent,
-    ScrollListenerDirective
+    ScrollListenerDirective,
+    FontMeasureComponent
   ],
   entryComponents: [
     CommentIssueDialogComponent,
