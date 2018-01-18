@@ -45,6 +45,7 @@ import {DbExplorerComponent} from './components/db-explorer/db-explorer.componen
 import {AccessLogViewComponent} from './components/access-log/access-log.component';
 import {ScrollListenerDirective} from './directives/scroll-listener.directive';
 import {FontMeasureComponent} from './components/font-measure/font-measure.component';
+import {FontSizeTableService} from './services/font-size-table.service';
 
 const appState: AppState = initialAppState;
 export function getInitialAppState(): AppState {
@@ -106,6 +107,7 @@ export function getInitialAppState(): AppState {
     {provide: APP_BASE_HREF, useValue: '/'},
     {provide: LocationStrategy, useClass: HashLocationStrategy},
     AppHeaderService,
+    FontSizeTableService,
     ProgressLogService,
     UrlService,
     VersionService

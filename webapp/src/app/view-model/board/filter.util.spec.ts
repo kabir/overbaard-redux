@@ -327,7 +327,8 @@ describe('Apply filter tests', () => {
       ownState: -1,
       visible: true,
       projectColour: 'red',
-      issueUrl: 'x'
+      issueUrl: 'x',
+      ownStateName: 'test'
     }
   }
 });
