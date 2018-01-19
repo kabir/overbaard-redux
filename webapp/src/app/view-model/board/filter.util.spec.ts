@@ -329,7 +329,7 @@ describe('Apply filter tests', () => {
       projectColour: 'red',
       issueUrl: 'x',
       ownStateName: 'test',
-      totalHeight: 0
+      calculatedTotalHeight: 0
     }
   }
 });
