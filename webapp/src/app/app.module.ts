@@ -46,6 +46,7 @@ import {AccessLogViewComponent} from './components/access-log/access-log.compone
 import {ScrollListenerDirective} from './directives/scroll-listener.directive';
 import {FontMeasureComponent} from './components/font-measure/font-measure.component';
 import {FontSizeTableService} from './services/font-size-table.service';
+import {FontMeasureTableComponent} from './components/font-measure/font-measure-table.component';
 
 const appState: AppState = initialAppState;
 export function getInitialAppState(): AppState {
@@ -84,7 +85,8 @@ export function getInitialAppState(): AppState {
     DbExplorerComponent,
     AccessLogViewComponent,
     ScrollListenerDirective,
-    FontMeasureComponent
+    FontMeasureComponent,
+    FontMeasureTableComponent
   ],
   entryComponents: [
     CommentIssueDialogComponent,
