@@ -47,6 +47,11 @@ export class KanbanViewColumnGroupComponent implements OnInit, OnChanges {
   }
 
   ngOnInit() {
+    console.log('Group ' + this.header.name + ' init');
+  }
+
+  ngOnDestroy() {
+    console.log('Group ' + this.header.name + ' init');
   }
 
   ngOnChanges(changes: SimpleChanges): void {
@@ -71,6 +76,10 @@ export class KanbanViewColumnGroupComponent implements OnInit, OnChanges {
 
   onUpdateParallelTask(event: UpdateParallelTaskEvent) {
     this.updateParallelTask.emit(event);
+  }
+
+  get seconds(): number {
+    return new Date().getUTCSeconds();
   }
 
 }

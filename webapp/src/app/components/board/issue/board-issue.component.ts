@@ -171,4 +171,9 @@ export class BoardIssueComponent implements OnInit, OnChanges {
   linkedIssueTrackByFn(index: number, li: LinkedIssue) {
     return li.key;
   }
+
+
+  get seconds(): number {
+    return new Date().getUTCSeconds();
+  }
 }

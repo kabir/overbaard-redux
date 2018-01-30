@@ -66,4 +66,8 @@ export class KanbanViewColumnComponent implements OnInit, OnChanges {
     this.updateParallelTask.emit(event);
   }
 
+
+  get seconds(): number {
+    return new Date().getUTCSeconds();
+  }
 }

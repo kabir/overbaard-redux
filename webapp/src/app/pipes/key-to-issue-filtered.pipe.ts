@@ -6,6 +6,7 @@ import {BoardIssueView} from '../view-model/board/board-issue-view';
 export class KeyToIssueFilteredPipe implements PipeTransform {
 
   transform(keys: List<string>, issues: Map<string, BoardIssueView>): List<BoardIssueView> {
+    console.log('-----> issues');
     return List<BoardIssueView>().withMutations(mutable => {
         keys.forEach(curr => {
           const issue = issues.get(curr);
