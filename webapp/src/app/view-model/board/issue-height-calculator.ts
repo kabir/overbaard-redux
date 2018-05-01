@@ -13,8 +13,8 @@ export class IssueHeightCalculator {
   private static readonly ISSUE_SUMMARY_AVATAR_LINES = 2;
   private static readonly ISSUE_SUMMARY_LINE_HEIGHT = 20;
 
-  private static readonly LINKED_ISSUE_HEIGHT = 19;
-  private static readonly PARALLEL_TASK_HEIGHT = 19;
+  private static readonly LINKED_ISSUE_HEIGHT = 17;
+  private static readonly PARALLEL_TASK_HEIGHT = 17;
 
   private _issueDetail: IssueDetailState;
   private _summaryCalcConfig: SummaryCalulationConfig;
@@ -132,7 +132,7 @@ export class IssueHeightCalculator {
       return 0;
     }
 
-    const lookup: FontSizeTable = this._fontSizeTable.getTable('14px');
+    const lookup: FontSizeTable = this._fontSizeTable.getTable('12px');
     let lines = 1;
     let currentWidth = 0;
     list.forEach(infoItem => {
